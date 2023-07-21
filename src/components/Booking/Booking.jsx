@@ -16,18 +16,26 @@ const Booking = ({ tour, avgRating }) => {
   });
 
   const handleChange = (e) => {
-    setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value } = e.target;
+    if (id === 'guestSize') {
+      setCredentials((prev) => ({
+        ...prev,
+        [id]: Number(value),
+      }));
+    } else {
+      setCredentials((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   const serviceFee = 10;
-  const totalAmount = Number(price) * Number(credentials.guestSize) + Number(serviceFee);
+  const totalAmount = Number(price) * credentials.guestSize + Number(serviceFee);
 
   // send data to the server
   const handleClick = (e) => {
     e.preventDefault();
     // Send credentials data to the server here.
     // Assuming there's a function named "sendDataToServer" that handles this.
-    //sendDataToServer(credentials);
+    // sendDataToServer(credentials);
     navigate('/thank-you');
   };
 
@@ -78,6 +86,8 @@ const Booking = ({ tour, avgRating }) => {
               type="number"
               placeholder=" Guest "
               id="guestSize"
+              value={credentials.guestSize}
+              min={1} // Restrict minimum guest size to 1
               required
               onChange={handleChange}
             />
@@ -90,9 +100,9 @@ const Booking = ({ tour, avgRating }) => {
         <ListGroup>
           <ListGroupItem className="border-0 px-0">
             <h5 className="d-flex align-items-center gap-1">
-              ${price} <i className="ri-close-line"></i> 1 person
+              ${price} <i className="ri-close-line"></i> {credentials.guestSize} person{credentials.guestSize > 1 ? 's' : ''}
             </h5>
-            <span>${price}</span>
+            <span>${price * credentials.guestSize}</span>
           </ListGroupItem>
           <ListGroupItem className="border-0 px-0">
             <h5>Service charge</h5>
@@ -112,3 +122,4 @@ const Booking = ({ tour, avgRating }) => {
 };
 
 export default Booking;
+
